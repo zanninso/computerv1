@@ -1,5 +1,6 @@
 import re
-from Equation import *
+from Equation import Equation
+from EquationVariable import EquationVariable
 
 # don't forget to manage the real numbers.
 class EquationParser:
@@ -8,14 +9,12 @@ class EquationParser:
     newEquation = None
     itemsPattern = []
     
-    itemsPattern.append("\d*\.?\d*[Xx]\s*\^\s*\d+|\d*\.?\d*[Xx]")     # pattern to get the variable with and without exponant
+    itemsPattern.append("\d*\.?\d*\s*[Xx]\s*\^\s*\d+|\d*\.?\d*[Xx]")     # pattern to get the variable with and without exponant
     itemsPattern.append("\d+\.?\d*")                                 # pattern to get numbers
     itemsPattern.append("[\+\-\*\/\=]")                         # pattern to get operators
     itemsPattern.append("\S+")                                  # pattern to get deffirent from the patterns above
     sign = 1
     equal = False
-    def __init__(self, equation):
-        self.parse(equation)
 
     def parse(self, equation):
         if (isinstance(equation, str)):
@@ -29,15 +28,17 @@ class EquationParser:
                     if self.equationValid:
                         break
                 if self.equationValid == False:
+                    print("error")
                     return None
+            print("equation good")
             return self.newEquation
 
     def Variable(self, token):
         if re.match(self.itemsPattern[0], token):
-            print(token)
-            values = re.split(',', re.sub("[Xx]\s*\^*|\s*]", ',', token))
-            exp = self.ConvertNum(values[0]) if len(values[0]) else 0
-            coef = (self.ConvertNum(values[1]) if len(values[1]) else 1) * self.sign
+            print("Variable", token)
+            values = re.split(',', re.sub("\s*[Xx]\s*\^*|\s*]", ',', token))
+            coef = (self.ConvertNum(values[0]) if values[0] != '' else 1) * self.sign
+            exp = self.ConvertNum(values[1]) if values[1] != '' else 0
             self.sign = 1
             print(exp, coef) #debug
             self.newEquation.append(EquationVariable(exp, coef))
@@ -47,6 +48,7 @@ class EquationParser:
 
     def Number(self, token):
         if re.match(self.itemsPattern[1], token):
+            print("Number", token) #debug
             coef = self.ConvertNum(token) * self.sign
             self.sign = 1
             self.newEquation.append(EquationVariable(0, coef))
