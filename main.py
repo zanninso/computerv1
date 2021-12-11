@@ -1,19 +1,14 @@
 from EquationParser import *
 from EquationVariable import EquationVariable
+import sys
 
-if re.match("\d+\.\d+", "4.22"):
-    print ("float")
-
-equationParser = EquationParser()
-eq = equationParser.parse("X+4. * -4x^5   + x^3 - X^3 + X^2 = +3 X^2")
-if (eq == None):
-    print("error")
+if len(sys.argv) == 2:
+    try:
+        equationParser = EquationParser()
+        eq = equationParser.parse(sys.argv[1])
+        eq.reduce_polynome()
+        eq.solve()
+    except Exception as e:
+        print(e)
 else:
-    for var in eq.sides_list[0]:
-        print (var,  end = ' ')
-    print ('=', end = ' ')
-    for var in eq.sides_list[1]:
-        print (var,  end = ' ')
-    print()
-eq.reduce_polynome()
-eq.print_polynome()
+    print("invalid argument should give an equation in one argument")
