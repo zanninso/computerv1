@@ -93,8 +93,7 @@ class Equation:
 
     def __solve_degree1(self):
         self.insert_missing_degrees()
-        n = 1 if self.__polynome[1].coef == 0 else (self.__polynome[1].coef * -1)
-        self.__solutions.append(n / self.__polynome[0].coef)
+        self.__solutions.append(self.__polynome[1].coef / self.__polynome[0].coef)
 
     def __solve_degree2(self):
         self.insert_missing_degrees()
